@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // Ensure your react-router-dom version supports hooks
 import axios from "axios";
 
 const VerifyPage = () => {
@@ -10,12 +10,19 @@ const VerifyPage = () => {
     const verifyEmail = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/auth/verify/${token}`);
-        setMessage(response.data.message);
+        setMessage(response.data.message || "Verification successful!");
       } catch (error) {
-        setMessage(error.response.data.message || "An error occurred.");
+        setMessage(
+          error.response?.data?.message || "An error occurred during verification."
+        );
       }
     };
-    verifyEmail();
+
+    if (token) {
+      verifyEmail();
+    } else {
+      setMessage("Invalid verification token.");
+    }
   }, [token]);
 
   return (

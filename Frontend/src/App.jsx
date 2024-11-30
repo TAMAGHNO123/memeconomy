@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import FirstLandingPage from "./pages/FirstLandingPage";
 import RegisterPage from "./pages/RegisterPage";
 import VerifyPage from "./pages/VerifyPage";
+import LoginPage from "./pages/LoginPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
         <Routes>
         <Route path="/" element={<FirstLandingPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/verify/:token" element={<VerifyPage />} />
         </Routes>
       </Router>

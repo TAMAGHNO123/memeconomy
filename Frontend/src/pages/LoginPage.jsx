@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Correct import
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,7 +36,7 @@ const LoginPage = () => {
     setTimeout(() => {
       if (formData.email === "soumyodeepdey2003@gmail.com" && formData.password === "1234") {
         setMessage({ type: "success", text: "Login successful!" });
-        navigate("/mainland"); // Redirect to /mainland
+        navigate("/mainland");
       } else {
         setMessage({ type: "error", text: "Invalid email or password." });
       }
@@ -48,7 +48,7 @@ const LoginPage = () => {
     onSuccess: (tokenResponse) => {
       console.log("Google Login Success:", tokenResponse);
       setMessage({ type: "success", text: "Google login successful!" });
-      navigate("/mainland"); // Redirect to /mainland
+      navigate("/mainland");
     },
     onError: () => {
       setMessage({ type: "error", text: "Google login failed. Please try again." });
@@ -58,9 +58,7 @@ const LoginPage = () => {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{
-        backgroundImage: `url(https://media.makeameme.org/created/yet-another-login.jpg`,
-      }}
+      style={{ backgroundImage: `url(https://media.makeameme.org/created/yet-another-login.jpg)` }}
     >
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -70,12 +68,8 @@ const LoginPage = () => {
       >
         <Card className="w-full max-w-md overflow-hidden">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-3xl font-bold text-center text-gray-800">
-              Welcome Back
-            </CardTitle>
-            <CardDescription className="text-center text-gray-600">
-              Please log in to continue
-            </CardDescription>
+            <CardTitle className="text-3xl font-bold text-center text-gray-800">Welcome Back</CardTitle>
+            <CardDescription className="text-center text-gray-600">Please log in to continue</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -108,9 +102,7 @@ const LoginPage = () => {
                 className="w-full transition-all duration-200 bg-blue-500 text-white hover:bg-blue-600 shadow-md"
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
+                {isLoading ? <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> : null}
                 {isLoading ? "Logging in..." : "Log In"}
               </Button>
             </form>
@@ -149,6 +141,7 @@ const LoginPage = () => {
             </div>
           </CardFooter>
         </Card>
+
         {message && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -32,7 +32,7 @@ const RegisterPage = () => {
     try {
       const response = await registerUser(formData);
       setMessage({ type: 'success', text: response.message });
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Registration failed. Please try again.' });
     } finally {
       setIsLoading(false);

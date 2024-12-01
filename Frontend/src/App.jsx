@@ -5,6 +5,8 @@ import VerifyPage from "./pages/VerifyPage";
 import LoginPage from "./pages/LoginPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import MainLand from "./pages/MainLand";
+import FullMemeMarket from "./pages/FullMemeMarket";
+import FullLeaderBoard from "./pages/FullLeaderBoard";
 
 const App = () => {
   return (
@@ -16,6 +18,8 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify/:token" element={<VerifyPage />} />
           <Route path="/mainland" element={<MainLand />} />
+          <Route path="/full+mememarket" element={<FullMemeMarket />} />
+          <Route path="/full+leaderboard" element={<FullLeaderBoard />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

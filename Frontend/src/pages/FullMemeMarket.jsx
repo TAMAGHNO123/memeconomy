@@ -1,9 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback,useEffect } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from 'lucide-react';
 
-const memePrices = [
+const initialMemePrices = [
   {
     id: 1,
     name: "Doge Coin Meme",
@@ -126,7 +124,51 @@ const memePrices = [
   }
 ];
 
+
 function MemeMarket() {
+  const [memePrices, setMemePrices] = useState(initialMemePrices);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchMoreMemes = useCallback(() => {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    // Simulate an API call to fetch more data
+    setTimeout(() => {
+      const newMemes = [
+        {
+          id: memePrices.length + 1,
+          name: "New Meme",
+          currentPrice: Math.random() * 500,
+          change24h: Math.random() * 20 - 10,
+          volume: Math.floor(Math.random() * 1000000),
+          marketCap: Math.floor(Math.random() * 10000000),
+          trending: Math.random() > 0.5,
+          imageUrl: "http://alpha-meme-maker.herokuapp.com/add/",
+        },
+        // More new memes...
+      ];
+      setMemePrices((prev) => [...prev, ...newMemes]);
+      setIsLoading(false);
+    }, 1500);
+  }, [isLoading, memePrices.length]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.scrollHeight - 10
+      ) {
+        fetchMoreMemes();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [fetchMoreMemes]);
+
   const [sortConfig, setSortConfig] = useState(null);
 
   const sortedMemes = useMemo(() => {
@@ -143,7 +185,7 @@ function MemeMarket() {
       });
     }
     return sortableMemes;
-  }, [sortConfig]);
+  }, [memePrices, sortConfig]);
 
   const requestSort = (key) => {
     let direction = "ascending";
@@ -155,51 +197,6 @@ function MemeMarket() {
 
   return (
     <div className="bg-blue-100 min-h-screen">
-      {/* Header */}
-      <header className="bg-blue-900 text-white p-4 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <img
-            src="/logo.png"
-            alt="Meme Market Logo"
-            className="w-10 h-10 rounded-full"
-          />
-          <h1 className="text-2xl font-bold">Meme Market</h1>
-        </div>
-        <div className="flex items-center space-x-4">
-          <input
-            type="text"
-            placeholder="Search memes..."
-            className="rounded px-2 py-1"
-          />
-          <img
-            src="/user-avatar.png"
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full border-2 border-white"
-          />
-        </div>
-      </header>
-
-      {/* Market Summary */}
-      <section className="bg-white shadow p-4 flex justify-between items-center">
-        <div>
-          <h2 className="text-lg font-bold">Total Market Cap</h2>
-          <p className="text-xl text-green-600">$15.3M</p>
-        </div>
-        <div>
-          <h2 className="text-lg font-bold">Trending Memes</h2>
-          <p className="text-blue-600">Doge Coin Meme, Stonks Meme</p>
-        </div>
-      </section>
-
-      {/* Live Ticker */}
-      <div className="bg-blue-700 text-white py-2 overflow-hidden">
-        <div className="ticker">
-          <div className="ticker-item">
-            Doge Coin Meme: $420.69 ▲ 15.3% | Distracted Boyfriend: $89.45 ▼ -5.2% | Stonks Meme: $256.78 ▲ 22.1%
-          </div>
-        </div>
-      </div>
-
       {/* Meme Table */}
       <main className="container mx-auto p-4">
         <Table className="w-full border border-gray-200 shadow-lg bg-white">
@@ -233,73 +230,31 @@ function MemeMarket() {
                 {sortConfig?.key === "change24h" &&
                   (sortConfig.direction === "ascending" ? "▲" : "▼")}
               </TableHead>
-              <TableHead
-                className="cursor-pointer text-right"
-                onClick={() => requestSort("volume")}
-              >
-                Volume{" "}
-                {sortConfig?.key === "volume" &&
-                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
-              </TableHead>
-              <TableHead
-                className="cursor-pointer text-right"
-                onClick={() => requestSort("marketCap")}
-              >
-                Market Cap{" "}
-                {sortConfig?.key === "marketCap" &&
-                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
-              </TableHead>
-              <TableHead className="text-center">Trending</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sortedMemes.map((meme) => (
-              <TableRow
-                key={meme.id}
-                className="hover:bg-gray-200 transition"
-              >
+              <TableRow key={meme.id}>
                 <TableCell>
                   <img
                     src={meme.imageUrl}
-                    alt={`${meme.name} thumbnail`}
-                    className="w-16 h-16 object-cover rounded"
+                    alt={meme.name}
+                    className="w-16 h-16 rounded"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{meme.name}</TableCell>
-                <TableCell className="text-right">
-                  ${meme.currentPrice.toFixed(2)}
-                </TableCell>
+                <TableCell>{meme.name}</TableCell>
+                <TableCell className="text-right">${meme.currentPrice.toFixed(2)}</TableCell>
                 <TableCell
-                  className={`text-right ${meme.change24h >= 0
-                    ? "text-green-600"
-                    : "text-red-600"
+                  className={`text-right ${meme.change24h > 0 ? "text-green-600" : "text-red-600"
                     }`}
                 >
-                  {meme.change24h >= 0 ? (
-                    <ArrowUpIcon className="inline mr-1" size={16} />
-                  ) : (
-                    <ArrowDownIcon className="inline mr-1" size={16} />
-                  )}
-                  {Math.abs(meme.change24h).toFixed(2)}%
-                </TableCell>
-                <TableCell className="text-right">
-                  ${(meme.volume / 1000000).toFixed(2)}M
-                </TableCell>
-                <TableCell className="text-right">
-                  ${(meme.marketCap / 1000000).toFixed(2)}M
-                </TableCell>
-                <TableCell className="text-center">
-                  {meme.trending && (
-                    <Badge variant="secondary" title="This meme is trending!">
-                      <TrendingUpIcon className="mr-1" size={14} />
-                      Trending
-                    </Badge>
-                  )}
+                  {meme.change24h.toFixed(2)}%
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        {isLoading && <p className="text-center py-4">Loading more memes...</p>}
       </main>
     </div>
   );

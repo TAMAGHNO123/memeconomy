@@ -17,6 +17,15 @@ function MainLand() {
             }));
         };
 
+        const removeMemeFromPortfolio = (id) => {
+            setUserPortfolioData((prevData) => ({
+                ...prevData,
+                portfolioComposition: prevData.portfolioComposition.filter((meme) => meme.id !== id),
+            }));
+        };
+        
+
+
         // Use setUserPortfolioData to update the state
         useEffect(() => {
             setUserPortfolioData({
@@ -186,7 +195,7 @@ function MainLand() {
                         </motion.p>
                     </div>
                     <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-                     onClick={() => navigate("/")}>
+                        onClick={() => navigate("/")}>
                         Logout
                     </button>
                 </header>
@@ -218,6 +227,8 @@ function MainLand() {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="font-semibold">${asset.currentPrice.toLocaleString()}</p>
+                                                    <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                                                        onClick={() => removeMemeFromPortfolio(asset.id)}>Remove</button>
                                                 </div>
                                             </div>
                                         </div>

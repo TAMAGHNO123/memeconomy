@@ -17,6 +17,15 @@ function MainLand() {
             }));
         };
 
+        const removeMemeFromPortfolio = (id) => {
+            setUserPortfolioData((prevData) => ({
+                ...prevData,
+                portfolioComposition: prevData.portfolioComposition.filter((meme) => meme.id !== id),
+            }));
+        };
+        
+
+
         // Use setUserPortfolioData to update the state
         useEffect(() => {
             setUserPortfolioData({
@@ -158,6 +167,11 @@ function MainLand() {
             }
         ];
 
+        let totalPortfolioPrice = 0;
+        userPortfolioData.portfolioComposition.forEach((asset) => {
+            totalPortfolioPrice += asset.currentPrice;
+        });
+
         return (
             <div className="min-h-screen bg-blue-200 p-8">
                 {/* Header Section */}
@@ -181,7 +195,7 @@ function MainLand() {
                         </motion.p>
                     </div>
                     <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-                     onClick={() => navigate("/")}>
+                        onClick={() => navigate("/")}>
                         Logout
                     </button>
                 </header>
@@ -191,7 +205,7 @@ function MainLand() {
                     {/* Portfolio Section */}
                     <div className="col-span-1">
                         <div className="my-portfolio-container bg-green-300 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">My Portfolio</h2>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-4">My Portfolio ${totalPortfolioPrice.toFixed(2)}</h2>
                             <div className="grid gap-4">
                                 {userPortfolioData.portfolioComposition.map((asset, index) => (
                                     <motion.div
@@ -213,6 +227,8 @@ function MainLand() {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="font-semibold">${asset.currentPrice.toLocaleString()}</p>
+                                                    <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                                                        onClick={() => removeMemeFromPortfolio(asset.id)}>Remove</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -335,7 +351,6 @@ function MainLand() {
                     </p>
                 </footer>
             </div>
-
         );
     }
 
